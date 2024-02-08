@@ -18,6 +18,18 @@ const getItems = (data, connection) => {
     });
 };
 
+const createItem = (data, connection) => {
+    return new Promise((resolve, reject) => {
+        connection.query("INSERT INTO tasks (description) VALUES (?)", [data.data], (error, results, fields) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        })
+    })
+}
+
 const updateItems = (data, connection) => {
     return new Promise((resolve, reject) => {
         switch (data.value) {
@@ -65,6 +77,9 @@ export default async function (req) {
             case "update":
                 const updateResult = await updateItems(req.data, connection);
                 return updateResult;
+            case "create":
+                const createResult = await createItem(req.data, connection);
+                return createResult;
             case "delete":
                 const deleteResult = await deleteItem(req.data, connection)
                 return deleteResult;
